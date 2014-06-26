@@ -32,11 +32,12 @@ SPHINX_INDEX = 'pypln_realtime'
 class Sphinxsearch(Worker):
     """Insert a document into a RT index in sphinsearch"""
     requires = ['text', '_id']
-    connection = MySQLdb.connect(hostname=SPHINX_HOST, port=SPHINX_PORT)
-    cursor = connection.cursor()
+    def __init__(self):
+        connection = MySQLdb.connect(hostname=SPHINX_HOST, port=SPHINX_PORT)
+        cursor = connection.cursor()
 
     def process(self, document):
         ID = int('0x'+str(document['_id']), 16)
-        self.cursor().execute("INSERT INTO {} (id, text) values ({}, {})".format(SPHINX_INDEX, ID, document['text']))
+        self.cursor.execute("INSERT INTO {} (id, text) values ({}, {})".format(SPHINX_INDEX, ID, document['text']))
 
 
